@@ -1,0 +1,31 @@
+import numpy as np
+import pandas as pd
+mush = pd.read_csv("mushroom.csv")
+mush.replace('?',np.nan,inplace=True)
+print(len(mush.columns),"columns, after dropping NA,",len(mush.dropna(axis=1).columns))
+mush.dropna(axis=1,inplace=True)
+target = 'class'
+features = mush.columns[mush.columns != target]
+classes = mush[target].unique()
+test = mush.sample(frac=0.3)
+mush = mush.drop(test.index)
+probs = {}
+probcl = {}
+for x in classes:
+ mushcl = mush[mush[target]==x][features]
+ clsp = {}
+ tot = len(mushcl)
+ for col in mushcl.columns:
+ colp = {}
+ for val,cnt in mushcl[col].value_counts().iteritems():
+ pr = cnt/tot
+ colp[val] = pr
+ clsp[col] = colp
+ probs[x] = clsp
+ probcl[x] = len(mushcl)/len(mush)
+def probabs(x):
+ if not isinstance(x,pd.Series):
+ raise IOError("Arg must of type Series")
+ probab = {}
+ for cl in classes:
+ pr = probcl[cl] 
