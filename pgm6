@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-mush = pd.read_csv("C:/Users/SAKSHI/Downloads/dataset/dataset/mushroom.csv")
+mush = pd.read_csv('mushroom.csv')
 mush.replace('?', np.nan, inplace=True)
 
 print(len(mush.columns), "columns, after dropping NA,", len(mush.dropna(axis=1).columns))
