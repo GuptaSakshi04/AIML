@@ -4,17 +4,14 @@ def a_star(start, goal, graph, heuristic):
     frontier = [(0, start)]
     came_from = {}
     cost_so_far = {start: 0}
-
     while frontier:
         _, current = heapq.heappop(frontier)
-
         if current == goal:
             path = []
             while current != start:
                 path.append(current)
                 current = came_from[current]
             return [start] + path[::-1]
-
         for neighbor, weight in graph.get(current, []):
             new_cost = cost_so_far[current] + weight
             if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
@@ -22,19 +19,14 @@ def a_star(start, goal, graph, heuristic):
                 priority = new_cost + heuristic(neighbor)
                 heapq.heappush(frontier, (priority, neighbor))
                 came_from[neighbor] = current
-
     return None
-
 def heuristic(node):
     H_dist = {'A': 10, 'B': 8, 'C': 5, 'D': 7, 'E': 3, 'F': 6, 'G': 5, 'H': 3, 'I': 1, 'J': 0}
     return H_dist.get(node, float('inf'))
-
 graph = {'A': [('B', 6), ('F', 3)], 'B': [('C', 3), ('D', 2)], 'C': [('D', 1), ('E', 5)],
          'D': [('C', 1), ('E', 8)], 'E': [('I', 5), ('J', 5)], 'F': [('G', 1), ('H', 7)],
          'G': [('I', 3)], 'H': [('I', 2)], 'I': [('E', 5), ('J', 3)]}
-
 start_node = 'A'
 goal_node = 'J'
-
 path = a_star(start_node, goal_node, graph, heuristic)
 print('Path found:\n', path) if path else print('Path does not exist!')
