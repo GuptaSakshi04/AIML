@@ -1,0 +1,22 @@
+import numpy as np
+X = np.array(([2, 9], [1, 5], [3, 6]), dtype=float) / np.amax(X, axis=0)  # Normalize X
+y = np.array(([92], [86], [89]), dtype=float) / 100  # Normalize y
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+# Combine weight and bias initialization
+wh = np.random.uniform(size=(2, 3))
+wout = np.random.uniform(size=(3, 1))
+for i in range(7000):  # Training loop
+    hidden_layer_input = X.dot(wh)  # Forward propagation
+    hidden_layer_output = sigmoid(hidden_layer_input)
+    output_layer_input = hidden_layer_output.dot(wout)
+    output = sigmoid(output_layer_input)
+    # Backpropagation
+    error = y - output
+    output_delta = error * output * (1 - output)  # Direct calculation of derivative
+    hidden_delta = output_delta.dot(wout.T) * hidden_layer_output * (1 - hidden_layer_output)
+    wout += hidden_layer_output.T.dot(output_delta) * 0.1  # Update weights
+    wh += X.T.dot(hidden_delta) * 0.1
+print("Input: \n", X)
+print("Actual Output: \n", y)
+print("Predicted Output: \n", output)
