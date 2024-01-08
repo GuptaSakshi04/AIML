@@ -1,24 +1,24 @@
 import numpy as np
 import pandas as pd
 
-data = pd.DataFrame(data=pd.read_csv('finds.csv'))
-concepts, target = np.array(data.iloc[:, 0:-1]), np.array(data.iloc[:, -1])
+data = pd.read_csv('C:/Users/SAKSHI/Downloads/dataset/dataset/finds.csv')
+concepts = np.array(data.iloc[:, :-1])
+target = np.array(data.iloc[:, -1])
 
 def learn(concepts, target):
-    specific_h, general_h = concepts[0].copy(), [["?" for _ in specific_h] for _ in specific_h]
+    specific_h = concepts[0].copy()
+    general_h = np.full((len(specific_h), len(specific_h)), '?')  # Initialize with '?' using NumPy
 
     for i, h in enumerate(concepts):
         for x in range(len(specific_h)):
-            if (target[i] == "Yes" and h[x] != specific_h[x]) or (target[i] == "No" and h[x] == specific_h[x]):
-                specific_h[x] = '?' if target[i] == "Yes" else specific_h[x]
-                general_h[x][x] = '?' if target[i] == "Yes" else specific_h[x]
-    
-    general_h = [h for h in general_h if h != ['?', '?', '?', '?', '?', '?']]
+            if target[i] == "Yes":
+                if h[x] != specific_h[x]:
+                    specific_h[x] = general_h[x][x] = '?'  # Update both in one line
+            else:  # Target is "No"
+                general_h[x][x] = specific_h[x] if h[x] != specific_h[x] else '?'  # Conditional assignment
 
-    return specific_h, general_h
+    return specific_h, general_h[general_h != '?']  # Filter general_h directly
 
 s_final, g_final = learn(concepts, target)
-
-print("Final S:", s_final, sep="\n")
-print("Final G:", g_final, sep="\n")
-
+print("Final S:\n", s_final)
+print("Final G:\n", g_final)
